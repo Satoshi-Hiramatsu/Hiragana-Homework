@@ -1,0 +1,11 @@
+{
+  "name": "ひらがな れんしゅうプリント ジェネレーター",
+  "short_name": "ひらがな練習",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2ece1",
+  "theme_color": "#2d4f78",
+  "icons": [
+    { "src": "/icons/hiragana.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "hiragana-renshu",
+  "version": "1.0.0",
+  "description": "幼稚園児・小学1年生向けに、マスにひらがな・カタカナを書いて練習するA4プリントを作成・印刷できるCloudflare Workersアプリ",
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build:strokes": "node tools/build-strokes.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": ["hiragana", "katakana", "education", "worksheet", "japanese", "cloudflare-workers"],
+  "author": "Satoshi Hiramatsu",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

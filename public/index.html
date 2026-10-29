@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ひらがな れんしゅうプリント ジェネレーター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/hiragana.svg" type="image/svg+xml">
+<meta name="theme-color" content="#2d4f78">
+<style id="pageSizeStyle">@page { size: A4 portrait; margin: 0; }</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo-container">
+    <div class="logo-icon">あ</div>
+    <div>
+      <h1 class="app-title">ひらがな れんしゅうプリント ジェネレーター</h1>
+      <p class="app-subtitle">マスにひらがな・カタカナを書いて練習するA4プリントを作成</p>
+    </div>
+  </div>
+</header>
+
+<main class="main-container">
+
+  <aside class="control-panel">
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">おすすめ設定</summary>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="recommend">年齢・目的から選ぶ</label>
+          <select id="recommend">
+            <option value="">選択してください（手動設定）</option>
+            <option value="first">年少・年中：はじめてのひらがな（1もじじっくり・特大マス）</option>
+            <option value="nencho">年長：あいうえおを1行ずつ（行れんしゅう・大きいマス）</option>
+            <option value="grade1">小学1年：国語ノート風（縦書き・A4横）</option>
+            <option value="chart">小学1年：50音ひょうの穴うめ（こたえつき）</option>
+            <option value="word">ことばを書いてみよう（絵つき）</option>
+            <option value="dakuon">だくおん・ようおんの練習</option>
+            <option value="katakana">カタカナ はじめて（1もじじっくり）</option>
+          </select>
+          <div class="help-text">選ぶと形式・マスの大きさなどをまとめて設定します。そのあと個別に変更できます。</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu" open>
+      <summary class="card-title">プリントの形式</summary>
+      <div class="card-body">
+        <div class="format-grid" role="radiogroup" aria-label="プリントの形式">
+          <label class="format-option">
+            <input type="radio" name="format" value="line" checked>
+            <span class="format-name">行れんしゅう</span>
+            <span class="format-desc">1行に1文字。手本→なぞり→空マス</span>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="format" value="single">
+            <span class="format-name">1もじじっくり</span>
+            <span class="format-desc">大きな手本と書き順の図つき</span>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="format" value="chart">
+            <span class="format-name">50音ひょう</span>
+            <span class="format-desc">表をなぞる・穴うめ・白紙</span>
+          </label>
+          <label class="format-option">
+            <input type="radio" name="format" value="word">
+            <span class="format-name">ことば</span>
+            <span class="format-desc">「あり」「いぬ」などを絵つきで</span>
+          </label>
+        </div>
+
+        <div class="op-block" data-for="line word">
+          <div class="op-title">行の設定</div>
+          <div class="digits-wrap">
+            <label class="digit-field">1つあたりの行数
+              <select id="linesPerUnit">
+                <option value="1" selected>1行</option>
+                <option value="2">2行</option>
+                <option value="3">3行</option>
+              </select>
+            </label>
+          </div>
+          <div class="help-text">手本・なぞりのあとは空マスで埋めます。行数を増やすと書く練習の量が増えます。</div>
+        </div>
+
+        <div class="op-block" data-for="single" hidden>
+          <div class="op-title">1もじじっくりの設定</div>
+          <div class="digits-wrap">
+            <label class="digit-field">練習の行数
+              <select id="singleLines">
+                <option value="1">1行</option>
+                <option value="2" selected>2行</option>
+                <option value="3">3行</option>
+              </select>
+            </label>
+          </div>
+          <div class="help-text">大きな手本には書き順の番号と書きはじめの点が付きます。右側に1画ずつの書き順図を出します。</div>
+        </div>
+
+        <div class="op-block" data-for="chart" hidden>
+          <div class="op-title">50音ひょうの設定</div>
+          <div class="form-group">
+            <label for="chartMode">表の出し方</label>
+            <select id="chartMode">
+              <option value="trace">ぜんぶなぞる</option>
+              <option value="fill" selected>穴うめ（ところどころ空欄）</option>
+              <option value="blank">白紙（あ段だけ表示）</option>
+            </select>
+          </div>
+          <div class="digits-wrap" id="blankRateWrap">
+            <label class="digit-field">空欄の割合
+              <select id="blankRate">
+                <option value="20">少なめ（約2割）</option>
+                <option value="35" selected>ふつう（約3割）</option>
+                <option value="50">多め（約5割）</option>
+                <option value="70">とても多い（約7割）</option>
+              </select>
+            </label>
+          </div>
+          <div class="option-grid" style="margin-top:.8rem;">
+            <label class="check-row"><input type="checkbox" id="opt-answer" checked> こたえのページもつける</label>
+          </div>
+          <div class="help-text">選んだ行で表を作ります。だくおん・ようおんを選ぶと、別の表として続けて出します。</div>
+        </div>
+
+        <div class="op-block" data-for="word" hidden>
+          <div class="op-title">ことばの設定</div>
+          <div class="option-grid">
+            <label class="check-row"><input type="checkbox" id="opt-picture" checked> 絵（絵文字）を表示する</label>
+          </div>
+          <div class="help-text">選んだ行の字ではじまることばを出します。絵がないことばは空欄になるので、子どもが絵をかけます。</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">練習する文字</summary>
+      <div class="card-body">
+        <div class="segmented" role="radiogroup" aria-label="文字の種類">
+          <label><input type="radio" name="script" value="hira" checked><span>ひらがな</span></label>
+          <label><input type="radio" name="script" value="kata"><span>カタカナ</span></label>
+        </div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label for="source">文字のえらびかた</label>
+          <select id="source">
+            <option value="rows" selected>行からえらぶ</option>
+            <option value="custom">じぶんで入力する</option>
+            <option value="weak">にがてな字（記録したもの）</option>
+          </select>
+        </div>
+
+        <div id="rowPicker" data-source="rows">
+          <div id="rowGroups"></div>
+        </div>
+
+        <div class="form-group" id="customWrap" data-source="custom" hidden>
+          <label for="customText">練習する字・ことば</label>
+          <textarea id="customText" rows="3" placeholder="例：たろう（なまえ）&#10;ことば形式では1行に1つずつ"></textarea>
+          <div class="help-text">名前の字など、好きな字を入れられます。「ことば」形式では1行（または空白区切り）を1つのことばとして扱います。</div>
+        </div>
+
+        <div class="help-text" id="weakHelp" data-source="weak" hidden>「にがてな字の記録」に保存した字で作ります。</div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label for="order">出す順番</label>
+          <select id="order">
+            <option value="seq" selected>あいうえお順</option>
+            <option value="random">ばらばら</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">マス・字のかたち</summary>
+      <div class="card-body">
+        <div class="digits-wrap">
+          <label class="digit-field">マスの大きさ
+            <select id="cellSize">
+              <option value="30">特大（30mm）</option>
+              <option value="24" selected>大（24mm）</option>
+              <option value="20">中（20mm）</option>
+              <option value="16">小（16mm）</option>
+            </select>
+          </label>
+          <label class="digit-field">なぞる数
+            <select id="traceCount">
+              <option value="0">なし</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="6">6</option>
+            </select>
+          </label>
+        </div>
+        <div class="help-text">目安：年少・年中は特大、年長は大、小学1年は中。</div>
+
+        <div class="form-group" style="margin-top:1rem;">
+          <label for="glyphSelect">字のかたち</label>
+          <select id="glyphSelect">
+            <option value="klee" selected>教科書体風（Klee One）</option>
+            <option value="ud">UDデジタル教科書体（Windowsのみ）</option>
+            <option value="maru">まるもじ（Zen Maru Gothic）</option>
+            <option value="stroke">えんぴつ風（書き順データ）</option>
+          </select>
+          <div class="help-text" id="glyphHelp">UDデジタル教科書体はWindowsに入っている書体です。ない環境ではKlee Oneで表示します。</div>
+        </div>
+
+        <div class="form-group">
+          <label for="traceStyle">なぞる字</label>
+          <select id="traceStyle">
+            <option value="gray" selected>うすい字</option>
+            <option value="dot">点線（えんぴつ風の字形）</option>
+          </select>
+        </div>
+
+        <div class="option-grid">
+          <label class="check-row"><input type="checkbox" id="opt-fade" checked> なぞる字をだんだんうすくする</label>
+          <label class="check-row"><input type="checkbox" id="opt-numbers"> 手本に書き順の番号をつける</label>
+          <label class="check-row"><input type="checkbox" id="opt-start" checked> 書き順の番号に、書きはじめの●を添える</label>
+          <label class="check-row"><input type="checkbox" id="opt-guides" checked> マスに十字の点線を入れる</label>
+        </div>
+        <div class="help-text">番号つきの手本は書き順データの字形（えんぴつ風）で表示します。1もじじっくりの大きな手本には、いつも番号が付きます。</div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">用紙・出力</summary>
+      <div class="card-body">
+        <div class="form-group">
+          <label>用紙の向き</label>
+          <div class="segmented" role="radiogroup" aria-label="用紙の向き">
+            <label><input type="radio" name="paper" value="portrait" checked><span>A4 縦</span></label>
+            <label><input type="radio" name="paper" value="landscape"><span>A4 横</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>書く向き</label>
+          <div class="segmented" role="radiogroup" aria-label="書く向き">
+            <label><input type="radio" name="direction" value="yoko" checked><span>横書き</span></label>
+            <label><input type="radio" name="direction" value="tate"><span>縦書き</span></label>
+          </div>
+          <div class="help-text">縦書きは右から左へ行が進みます（国語ノートと同じ）。縦書きはA4横、横書きはA4縦が見やすくなります。</div>
+        </div>
+        <div class="digits-wrap">
+          <label class="digit-field">セット数
+            <select id="setCount">
+              <option value="1" selected>1セット</option>
+              <option value="2">2セット</option>
+              <option value="3">3セット</option>
+              <option value="5">5セット</option>
+            </select>
+          </label>
+        </div>
+        <div class="help-text">同じ設定のプリントをくり返し出力します。「ばらばら」や穴うめでは、セットごとに中身が変わります。</div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">プリント上部</summary>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="meta-title">タイトル</label>
+          <input type="text" id="meta-title" placeholder="空欄なら自動（例：ひらがな れんしゅう）">
+        </div>
+        <div class="option-grid">
+          <label class="check-row"><input type="checkbox" id="meta-name" checked> なまえ欄を表示</label>
+          <label class="check-row"><input type="checkbox" id="meta-date" checked> 日付欄を表示</label>
+          <label class="check-row"><input type="checkbox" id="meta-class"> 組欄を表示</label>
+          <label class="check-row"><input type="checkbox" id="meta-number"> 番号欄を表示</label>
+          <label class="check-row"><input type="checkbox" id="meta-hanamaru" checked> はなまる欄を表示</label>
+          <label class="check-row"><input type="checkbox" id="meta-badge" checked> 練習する行を表示（例：あ行・か行）</label>
+        </div>
+      </div>
+    </details>
+
+    <div class="error" id="errorMsg"></div>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">プリセット</summary>
+      <div class="card-body">
+        <div class="form-group">
+          <label for="preset-name">名前を付けて保存</label>
+          <div style="display:flex; gap:.5rem;">
+            <input type="text" id="preset-name" placeholder="例：たろう 年長 か行">
+            <button id="presetSaveBtn" class="btn btn-secondary btn-small" type="button" style="flex:0 0 auto;">保存</button>
+          </div>
+        </div>
+        <div id="presetList"></div>
+        <div class="help-text">このブラウザに保存されます。</div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">履歴</summary>
+      <div class="card-body">
+        <div id="historyList"></div>
+        <div class="help-text">印刷したプリントを最大20件まで記録します。「表示」で同じ内容を再現します。</div>
+      </div>
+    </details>
+
+    <details class="card settings-accordion" name="settings-menu">
+      <summary class="card-title">にがてな字の記録</summary>
+      <div class="card-body">
+        <div class="help-text">プレビューの手本（いちばん濃い字）をクリックすると印が付きます。書けなかった字に印を付けてから記録してください。</div>
+        <button id="weakRecordBtn" class="btn btn-secondary btn-small" type="button" style="margin:.6rem 0;">印を付けた字を にがて として記録する</button>
+        <div id="weakList"></div>
+      </div>
+    </details>
+
+    <div class="btn-row">
+      <button id="generateBtn" class="btn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        作りなおす
+      </button>
+      <button id="printBtn" class="btn btn-print" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        印刷 / PDF
+      </button>
+      <div class="help-text">設定を変えるとプレビューにすぐ反映されます。「作りなおす」は、ばらばらの順番や穴うめの位置を変えます。</div>
+    </div>
+
+    <div class="credit">書き順データ：<a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a>（© Ulrich Apel, CC BY-SA 3.0）</div>
+  </aside>
+
+  <section class="preview-container">
+    <div class="preview-header">
+      <span class="preview-title" id="previewTitle">A4プリントプレビュー</span>
+      <div class="preview-tools">
+        <span class="preview-hint" id="previewHint">画面表示は縮小されず等倍です（横スクロールで確認できます）</span>
+        <label class="preview-fit" id="previewFitToggle" hidden><input type="checkbox" id="opt-fit-width" checked> 画面幅に合わせる</label>
+      </div>
+    </div>
+    <div class="a4-wrapper" id="a4Wrapper"></div>
+  </section>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
