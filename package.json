@@ -1,5 +1,5 @@
 {
-  "name": "hiragana-renshu",
+  "name": "hiragana-homework",
   "version": "1.0.0",
   "description": "幼稚園児・小学1年生向けに、マスにひらがな・カタカナを書いて練習するA4プリントを作成・印刷できるCloudflare Workersアプリ",
   "private": true,

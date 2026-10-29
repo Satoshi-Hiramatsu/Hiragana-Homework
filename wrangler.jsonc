@@ -1,6 +1,7 @@
 {
-  "name": "hiragana-renshu",
+  "name": "hiragana-homework",
   "compatibility_date": "2026-10-29",
+  "workers_dev": true,
   "assets": {
     "directory": "./public",
     "not_found_handling": "none"
