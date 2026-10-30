@@ -2,7 +2,7 @@
 // 用紙はいつも A4 横、字は縦書きで右から左へ進む。縦書きは CSS の writing-mode に任せ、ここでは
 //   inline = 1列の長さ（上から下）、block = 列が積み重なる向きの長さ（右から左）
 // として割り付ける。寸法はすべて mm。
-import { cell, pictureCell, strokeGlyph, hasStrokes, strokeCount, traceColor, INK, BIG_MODEL } from './render.js';
+import { cell, pictureCell, strokeGlyph, hasStrokes, strokeCount, traceColor, INK, bigModelColor } from './render.js';
 import { isSmall } from './kana.js';
 
 const PAD_X = 12;
@@ -231,7 +231,7 @@ function bigModelBlock(unit, dims, s, ctx, blankCols, traceCount) {
   // 大きな手本には、設定にかかわらず書き順の番号をすべて付ける
   const modelCtx = { ...ctx, strokeNumbers: true };
   chars.forEach(ch => {
-    const box = cell({ kind: 'model', ch, unit, color: BIG_MODEL }, big, modelCtx);
+    const box = cell({ kind: 'model', ch, unit, color: bigModelColor(ctx.modelShade) }, big, modelCtx);
     box.style.blockSize = (big + GAP_IN) + 'mm';
     model.appendChild(box);
   });
@@ -341,12 +341,12 @@ function bigGlyphBox(ch, size, ctx) {
   box.style.setProperty('--cell', size + 'mm');
   box.dataset.unit = ch;
   if (hasStrokes(ch)) {
-    box.appendChild(strokeGlyph(ch, { numbers: true, startDots: ctx.startDots, width: 3.6, numberSize: 9, color: BIG_MODEL }));
+    box.appendChild(strokeGlyph(ch, { numbers: true, startDots: ctx.startDots, width: 3.6, numberSize: 9, color: bigModelColor(ctx.modelShade) }));
   } else {
     const span = document.createElement('span');
     span.className = 'glyph-text';
     span.textContent = ch;
-    span.style.color = BIG_MODEL;
+    span.style.color = bigModelColor(ctx.modelShade);
     box.appendChild(span);
   }
   if (isSmall(ch)) box.firstChild.classList.add('v-small');

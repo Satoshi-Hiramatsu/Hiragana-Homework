@@ -6,8 +6,14 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 const VIEW = 109; // KanjiVG の座標系
 
 export const INK = '#1a1a1a';
-// 書き順つきの大きな手本の色。上からなぞれるよう、なぞり字（#b4b4b4）より少し濃いうすい色にする
-export const BIG_MODEL = '#999999';
+// 書き順つきの大きな手本の濃さ。上からなぞれるよう、ふつうはうすいグレーにする
+export const BIG_MODEL_SHADES = {
+  black: INK,
+  dark: '#777777',
+  normal: '#adadad',
+  light: '#c8c8c8',
+};
+export function bigModelColor(shade) { return BIG_MODEL_SHADES[shade] || BIG_MODEL_SHADES.normal; }
 const START_DOT = '#c0392b';
 
 export function hasStrokes(ch) { return Boolean(STROKES[ch]); }

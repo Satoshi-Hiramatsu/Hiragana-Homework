@@ -71,6 +71,7 @@ const SELECTS = {
   source: 'source', order: 'order', cellSize: 'cellSize', traceCount: 'traceCount', glyph: 'glyphSelect',
   traceStyle: 'traceStyle', sets: 'setCount', blankCols: 'blankCols', glyphScale: 'glyphScale',
 };
+  modelShade: 'modelShade',
 const NUMERIC = new Set(['linesPerUnit', 'singleLines', 'blankRate', 'cellSize', 'traceCount', 'sets', 'blankCols', 'glyphScale']);
 const CHECKS = {
   answer: 'opt-answer', showPicture: 'opt-picture', fade: 'opt-fade', strokeNumbers: 'opt-numbers',
@@ -248,6 +249,7 @@ function buildSheets(cfg, seed) {
     guides: cfg.guides,
     fade: cfg.fade,
   };
+    modelShade: cfg.modelShade,
   const badge = cfg.metaBadge ? badgeText(cfg) : '';
   const sheets = [];
   const words = wordEntries(cfg);

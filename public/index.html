@@ -246,6 +246,17 @@
 
         <div class="option-grid">
           <label class="check-row"><input type="checkbox" id="opt-fade" checked> なぞる字をだんだんうすくする</label>
+        <div class="form-group">
+          <label for="modelShade">書き順つき手本の濃さ</label>
+          <select id="modelShade">
+            <option value="black">黒（なぞらない）</option>
+            <option value="dark">こいめ</option>
+            <option value="normal" selected>ふつう（上からなぞれる）</option>
+            <option value="light">うすめ</option>
+          </select>
+          <div class="help-text">行れんしゅう・1もじじっくりの大きな手本の字の濃さです。書き順の番号と●は赤のままです。</div>
+        </div>
+
           <label class="check-row"><input type="checkbox" id="opt-numbers"> 手本に書き順の番号をつける</label>
           <label class="check-row"><input type="checkbox" id="opt-start" checked> 書き順の番号に、書きはじめの●を添える</label>
           <label class="check-row"><input type="checkbox" id="opt-guides" checked> マスに十字の点線を入れる</label>
