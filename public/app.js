@@ -69,9 +69,9 @@ const RADIOS = ['format', 'script'];
 const SELECTS = {
   linesPerUnit: 'linesPerUnit', singleLines: 'singleLines', chartMode: 'chartMode', blankRate: 'blankRate',
   source: 'source', order: 'order', cellSize: 'cellSize', traceCount: 'traceCount', glyph: 'glyphSelect',
-  traceStyle: 'traceStyle', sets: 'setCount',
+  traceStyle: 'traceStyle', sets: 'setCount', blankCols: 'blankCols', glyphScale: 'glyphScale',
 };
-const NUMERIC = new Set(['linesPerUnit', 'singleLines', 'blankRate', 'cellSize', 'traceCount', 'sets']);
+const NUMERIC = new Set(['linesPerUnit', 'singleLines', 'blankRate', 'cellSize', 'traceCount', 'sets', 'blankCols', 'glyphScale']);
 const CHECKS = {
   answer: 'opt-answer', showPicture: 'opt-picture', fade: 'opt-fade', strokeNumbers: 'opt-numbers',
   startDots: 'opt-start', guides: 'opt-guides', metaName: 'meta-name', metaDate: 'meta-date',
@@ -112,11 +112,11 @@ function applyConfig(cfg) {
 const SEION = ROWS.filter(r => r.group === 'seion').map(r => r.key);
 const RECOMMEND = {
   first: { format: 'single', script: 'hira', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
-  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, linesPerUnit: 1, strokeNumbers: true, startDots: true, order: 'seq' },
-  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, strokeNumbers: false, order: 'seq' },
+  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, blankCols: 2, strokeNumbers: true, startDots: true, order: 'seq' },
+  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, blankCols: 2, strokeNumbers: false, order: 'seq' },
   chart: { format: 'chart', script: 'hira', source: 'rows', rows: SEION, chartMode: 'fill', blankRate: 35, answer: true, cellSize: 24, glyph: 'klee' },
   word: { format: 'word', script: 'hira', source: 'rows', rows: ['a', 'ka', 'sa'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 1, linesPerUnit: 1, showPicture: true, strokeNumbers: false, order: 'seq' },
-  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, strokeNumbers: false, order: 'seq' },
+  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, blankCols: 2, strokeNumbers: false, order: 'seq' },
   katakana: { format: 'single', script: 'kata', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
 };
 
@@ -215,6 +215,10 @@ function wrapSheet(body, cfg, badge) {
   const sheet = document.createElement('div');
   sheet.className = 'sheet';
   sheet.style.setProperty('--kana-font', FONTS[cfg.glyph] || FONTS.klee);
+  // 字の大きさ（マスに対する割合）。書き順データの字はふつう（76%）を基準に拡大・縮小する
+  const scale = (cfg.glyphScale || 76) / 100;
+  sheet.style.setProperty('--glyph-scale', String(scale));
+  sheet.style.setProperty('--glyph-ratio', String(scale / 0.76));
   sheet.appendChild(buildSheetHeader(cfg, badge));
   sheet.appendChild(body);
   return sheet;

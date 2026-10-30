@@ -56,7 +56,7 @@
           <label class="format-option">
             <input type="radio" name="format" value="line" checked>
             <span class="format-name">行れんしゅう</span>
-            <span class="format-desc">右の列から 手本→なぞり</span>
+            <span class="format-desc">大きな手本→なぞり1列→書く列</span>
           </label>
           <label class="format-option">
             <input type="radio" name="format" value="single">
@@ -75,7 +75,22 @@
           </label>
         </div>
 
-        <div class="op-block" data-for="line word">
+        <div class="op-block" data-for="line">
+          <div class="op-title">行れんしゅうの設定</div>
+          <div class="digits-wrap">
+            <label class="digit-field">書く列の数
+              <select id="blankCols">
+                <option value="1">1列</option>
+                <option value="2" selected>2列</option>
+                <option value="3">3列</option>
+                <option value="4">4列</option>
+              </select>
+            </label>
+          </div>
+          <div class="help-text">1文字ごとに、右上に4マス分の大きな手本を1つ置きます。手本の下の右の列はうすいなぞり字、そこから左は自分で書く空マスの列です。書く列の数には、手本の下の左の列も入ります。</div>
+        </div>
+
+        <div class="op-block" data-for="word">
           <div class="op-title">行の設定</div>
           <div class="digits-wrap">
             <label class="digit-field">1つあたりの行数
@@ -190,6 +205,13 @@
               <option value="16">小（16mm）</option>
             </select>
           </label>
+          <label class="digit-field">字の大きさ
+            <select id="glyphScale">
+              <option value="60">小（マスの6割）</option>
+              <option value="76" selected>ふつう（マスの7割半）</option>
+              <option value="86">大（マスの8割半）</option>
+            </select>
+          </label>
           <label class="digit-field">なぞる数
             <select id="traceCount">
               <option value="0">なし</option>
@@ -201,7 +223,7 @@
             </select>
           </label>
         </div>
-        <div class="help-text">目安：年少・年中は特大、年長は大、小学1年は中。</div>
+        <div class="help-text">目安：年少・年中は特大、年長は大、小学1年は中。字の大きさはマスに対する大きさです。行れんしゅうは なぞりが1列に決まっているので、なぞる数は使いません。</div>
 
         <div class="form-group" style="margin-top:1rem;">
           <label for="glyphSelect">字のかたち</label>

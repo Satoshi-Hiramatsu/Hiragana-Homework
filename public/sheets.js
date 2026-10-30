@@ -198,24 +198,64 @@ function fadeColumnsBlock(text, dims, s, ctx, { gap, head } = {}) {
 }
 
 // ===== A. 行れんしゅう =====
+// 1文字ぶんは、右上に 4マス分（2×2）の大きな手本を1つ。
+// その下の右の列をうすいなぞり字、左の列を空マスにし、さらに左へ空マスの列を続ける。
+//   cfg.blankCols: 書く列（空マスの列）の数。手本の下の左の列も1つに数える。
+function repeatLine(unit, kind, cap, s, gap, extra = {}) {
+  const len = [...unit].length * s;
+  const count = Math.max(1, Math.floor((cap + gap + 0.01) / (len + gap)));
+  return flow(Array.from({ length: count },
+    () => ({ cells: cellsOf(unit, kind, { unit, ...extra }), gapBefore: gap })), cap, s)[0];
+}
+
+function bigModelBlock(unit, dims, s, ctx, blankCols) {
+  const chars = [...unit];
+  const gap = chars.length > 1 ? SLOT_GAP : 0;
+  // 幅は2列ぶん（列のすきまも含む）、高さは2マスぶんにして、下と左の列にそろえる
+  const big = s * 2;
+  const rest = dims.inline - big * chars.length;
+
+  const el = document.createElement('div');
+  el.className = 'unit-block big-model-block';
+  const top = document.createElement('div');
+  top.className = 'line';
+  const model = document.createElement('div');
+  model.className = 'cell-group';
+  chars.forEach(ch => {
+    const box = cell({ kind: 'model', ch, unit }, big, ctx);
+    box.style.blockSize = (big + GAP_IN) + 'mm';
+    model.appendChild(box);
+  });
+  top.appendChild(model);
+
+  const under = document.createElement('div');
+  under.className = 'under-model';
+  const trace = repeatLine(unit, 'trace', rest, s, gap, { color: traceColor(0, 1, false) });
+  const firstBlank = repeatLine(unit, 'blank', rest, s, gap);
+  const traceEl = renderLine(trace, s, ctx);
+  const blankEl = renderLine(firstBlank, s, ctx);
+  blankEl.style.marginBlockStart = GAP_IN + 'mm';
+  under.append(traceEl, blankEl);
+  top.appendChild(under);
+  el.appendChild(top);
+
+  let used = big * chars.length + trace.used;
+  for (let i = 1; i < blankCols; i++) {
+    const line = repeatLine(unit, 'blank', dims.inline, s, gap);
+    const lineEl = renderLine(line, s, ctx);
+    lineEl.style.marginBlockStart = GAP_IN + 'mm';
+    el.appendChild(lineEl);
+    used = Math.max(used, line.used);
+  }
+  const cols = blankCols + 1; // なぞりの列 + 書く列
+  return { el, size: cols * s + (cols - 1) * GAP_IN, used };
+}
+
 export function buildLinePages(cfg, units, ctx) {
   const dims = paperDims(cfg);
   const s = cfg.cellSize;
-  if (ctx.fade) {
-    const blocks = units.map(unit => fadeColumnsBlock(unit, dims, s, ctx,
-      { gap: [...unit].length > 1 ? SLOT_GAP : 0 }));
-    const maxUsed = Math.max(0, ...blocks.map(b => b.used));
-    return pagesToBodies(paginate(blocks, dims, 5), dims, 5, maxUsed);
-  }
-  const blocks = units.map(unit => {
-    const gap = [...unit].length > 1 ? SLOT_GAP : 0;
-    const base = [{ cells: cellsOf(unit, 'model', { unit }), gapBefore: gap }]
-      .concat(traceGroups(unit, cfg.traceCount, ctx, gap, unit));
-    const lines = fillWithBlanks(base, () => ({ cells: cellsOf(unit, 'blank'), gapBefore: gap }),
-      dims.inline, s, cfg.linesPerUnit);
-    return unitBlock(lines, s, ctx);
-  });
-  const between = cfg.linesPerUnit > 1 ? 5 : 2.5;
+  const blocks = units.map(unit => bigModelBlock(unit, dims, s, ctx, cfg.blankCols));
+  const between = 5;
   const maxUsed = Math.max(0, ...blocks.map(b => b.used));
   return pagesToBodies(paginate(blocks, dims, between), dims, between, maxUsed);
 }

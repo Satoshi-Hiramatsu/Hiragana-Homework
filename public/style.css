@@ -426,10 +426,11 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
   display: block;
   writing-mode: horizontal-tb;
   font-family: var(--kana-font);
-  font-size: calc(var(--cell) * 0.76);
+  font-size: calc(var(--cell) * var(--glyph-scale, 0.76));
   line-height: 1;
 }
-.glyph-svg { position: relative; z-index: 1; display: block; width: 100%; height: 100%; }
+.glyph-svg { position: relative; z-index: 1; display: block; flex: none; width: calc(100% * var(--glyph-ratio, 1)); height: calc(100% * var(--glyph-ratio, 1)); }
+.under-model { flex: none; }
 .v-small { transform: translate(20%, -44%); }
 .v-rotate { transform: rotate(90deg); }
 
