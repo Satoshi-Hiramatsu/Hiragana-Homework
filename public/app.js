@@ -112,11 +112,11 @@ function applyConfig(cfg) {
 const SEION = ROWS.filter(r => r.group === 'seion').map(r => r.key);
 const RECOMMEND = {
   first: { format: 'single', script: 'hira', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
-  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, blankCols: 2, strokeNumbers: true, startDots: true, order: 'seq' },
-  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, blankCols: 2, strokeNumbers: false, order: 'seq' },
+  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, blankCols: 1, strokeNumbers: true, startDots: true, order: 'seq' },
+  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 3, blankCols: 1, strokeNumbers: false, order: 'seq' },
   chart: { format: 'chart', script: 'hira', source: 'rows', rows: SEION, chartMode: 'fill', blankRate: 35, answer: true, cellSize: 24, glyph: 'klee' },
   word: { format: 'word', script: 'hira', source: 'rows', rows: ['a', 'ka', 'sa'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 1, linesPerUnit: 1, showPicture: true, strokeNumbers: false, order: 'seq' },
-  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, blankCols: 2, strokeNumbers: false, order: 'seq' },
+  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 3, blankCols: 1, strokeNumbers: false, order: 'seq' },
   katakana: { format: 'single', script: 'kata', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
 };
 

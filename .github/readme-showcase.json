@@ -40,7 +40,7 @@
       "id": "sheet-line",
       "path": "docs/screenshots/sheet-line.png",
       "url": "http://127.0.0.1:8787",
-      "alt": "行れんしゅうのプリント（A4横・縦書き）。4マス分の大きな手本、その下にうすいなぞり字1列、左に書く空マスの列",
+      "alt": "行れんしゅうのプリント（A4横・縦書き）。4マス分の書き順つきの大きな手本、その下にうすいなぞり字3マス、左に書く空マスの列",
       "viewport": {
         "width": 1800,
         "height": 1300
@@ -180,13 +180,13 @@
         },
         {
           "action": "click",
-          "target": "手本「い」",
-          "selector": "#a4Wrapper .cell-model[data-unit=\"い\"]"
+          "target": "手本「き」",
+          "selector": "#a4Wrapper .cell-model[data-unit=\"き\"]"
         },
         {
           "action": "click",
-          "target": "手本「お」",
-          "selector": "#a4Wrapper .cell-model[data-unit=\"お\"]"
+          "target": "手本「け」",
+          "selector": "#a4Wrapper .cell-model[data-unit=\"け\"]"
         },
         {
           "action": "open",

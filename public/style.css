@@ -432,6 +432,8 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
 .glyph-svg { position: relative; z-index: 1; display: block; flex: none; width: calc(100% * var(--glyph-ratio, 1)); height: calc(100% * var(--glyph-ratio, 1)); }
 .under-model { flex: none; }
 .v-small { transform: translate(20%, -44%); }
+/* 書き順データの小書き文字は枠の下・中央に描かれているので、ずらす量をフォントより小さくする */
+.glyph-svg.v-small { transform: translate(18%, -28%); }
 .v-rotate { transform: rotate(90deg); }
 
 .cell-model[data-unit], .big-glyph[data-unit] { cursor: pointer; }

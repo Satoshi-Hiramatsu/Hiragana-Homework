@@ -80,14 +80,14 @@
           <div class="digits-wrap">
             <label class="digit-field">書く列の数
               <select id="blankCols">
-                <option value="1">1列</option>
-                <option value="2" selected>2列</option>
+                <option value="1" selected>1列</option>
+                <option value="2">2列</option>
                 <option value="3">3列</option>
                 <option value="4">4列</option>
               </select>
             </label>
           </div>
-          <div class="help-text">1文字ごとに、右上に4マス分の大きな手本を1つ置きます。手本の下の右の列はうすいなぞり字、そこから左は自分で書く空マスの列です。書く列の数には、手本の下の左の列も入ります。</div>
+          <div class="help-text">1文字ごとに、右上に4マス分の大きな手本（書き順の番号つき）を1つ置きます。手本の下の右の列は上から「なぞる数」だけうすいなぞり字（残りは空マス）、そこから左は自分で書く空マスの列です。書く列の数には、手本の下の左の列も入ります。用紙の幅にぴったり収まるよう、マスの大きさは少しだけ調整されます。</div>
         </div>
 
         <div class="op-block" data-for="word">
@@ -223,7 +223,7 @@
             </select>
           </label>
         </div>
-        <div class="help-text">目安：年少・年中は特大、年長は大、小学1年は中。字の大きさはマスに対する大きさです。行れんしゅうは なぞりが1列に決まっているので、なぞる数は使いません。</div>
+        <div class="help-text">目安：年少・年中は特大、年長は大、小学1年は中。字の大きさはマスに対する大きさです。行れんしゅうでは、なぞる数は手本の下の列に入れるなぞり字のマスの数です。</div>
 
         <div class="form-group" style="margin-top:1rem;">
           <label for="glyphSelect">字のかたち</label>
@@ -250,7 +250,7 @@
           <label class="check-row"><input type="checkbox" id="opt-start" checked> 書き順の番号に、書きはじめの●を添える</label>
           <label class="check-row"><input type="checkbox" id="opt-guides" checked> マスに十字の点線を入れる</label>
         </div>
-        <div class="help-text">番号つきの手本は書き順データの字形（えんぴつ風）で表示します。1もじじっくりの大きな手本には、いつも番号が付きます。</div>
+        <div class="help-text">番号つきの手本は書き順データの字形（えんぴつ風）で表示します。行れんしゅう・1もじじっくりの大きな手本には、いつも番号が付きます。</div>
       </div>
     </details>
 

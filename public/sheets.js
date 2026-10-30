@@ -199,16 +199,21 @@ function fadeColumnsBlock(text, dims, s, ctx, { gap, head } = {}) {
 
 // ===== A. 行れんしゅう =====
 // 1文字ぶんは、右上に 4マス分（2×2）の大きな手本を1つ。
-// その下の右の列をうすいなぞり字、左の列を空マスにし、さらに左へ空マスの列を続ける。
+// その下の右の列は上から traceCount 個をうすいなぞり字、残りを空マスにする。
+// 手本の下の左の列と、さらに左へ続く列は空マス。
 //   cfg.blankCols: 書く列（空マスの列）の数。手本の下の左の列も1つに数える。
-function repeatLine(unit, kind, cap, s, gap, extra = {}) {
+// kindAt(i): i 個目（0始まり）のマスの種類と追加の指定
+function repeatLine(unit, kindAt, cap, s, gap) {
   const len = [...unit].length * s;
   const count = Math.max(1, Math.floor((cap + gap + 0.01) / (len + gap)));
-  return flow(Array.from({ length: count },
-    () => ({ cells: cellsOf(unit, kind, { unit, ...extra }), gapBefore: gap })), cap, s)[0];
+  return flow(Array.from({ length: count }, (_, i) => {
+    const [kind, extra] = kindAt(i);
+    return { cells: cellsOf(unit, kind, { unit, ...extra }), gapBefore: gap };
+  }), cap, s)[0];
 }
+const BLANK = () => ['blank', {}];
 
-function bigModelBlock(unit, dims, s, ctx, blankCols) {
+function bigModelBlock(unit, dims, s, ctx, blankCols, traceCount) {
   const chars = [...unit];
   const gap = chars.length > 1 ? SLOT_GAP : 0;
   // 幅は2列ぶん（列のすきまも含む）、高さは2マスぶんにして、下と左の列にそろえる
@@ -221,8 +226,10 @@ function bigModelBlock(unit, dims, s, ctx, blankCols) {
   top.className = 'line';
   const model = document.createElement('div');
   model.className = 'cell-group';
+  // 大きな手本には、設定にかかわらず書き順の番号をすべて付ける
+  const modelCtx = { ...ctx, strokeNumbers: true };
   chars.forEach(ch => {
-    const box = cell({ kind: 'model', ch, unit }, big, ctx);
+    const box = cell({ kind: 'model', ch, unit }, big, modelCtx);
     box.style.blockSize = (big + GAP_IN) + 'mm';
     model.appendChild(box);
   });
@@ -230,8 +237,9 @@ function bigModelBlock(unit, dims, s, ctx, blankCols) {
 
   const under = document.createElement('div');
   under.className = 'under-model';
-  const trace = repeatLine(unit, 'trace', rest, s, gap, { color: traceColor(0, 1, false) });
-  const firstBlank = repeatLine(unit, 'blank', rest, s, gap);
+  const traceColorValue = traceColor(0, 1, false);
+  const trace = repeatLine(unit, i => (i < traceCount ? ['trace', { color: traceColorValue }] : BLANK()), rest, s, gap);
+  const firstBlank = repeatLine(unit, BLANK, rest, s, gap);
   const traceEl = renderLine(trace, s, ctx);
   const blankEl = renderLine(firstBlank, s, ctx);
   blankEl.style.marginBlockStart = GAP_IN + 'mm';
@@ -241,7 +249,7 @@ function bigModelBlock(unit, dims, s, ctx, blankCols) {
 
   let used = big * chars.length + trace.used;
   for (let i = 1; i < blankCols; i++) {
-    const line = repeatLine(unit, 'blank', dims.inline, s, gap);
+    const line = repeatLine(unit, BLANK, dims.inline, s, gap);
     const lineEl = renderLine(line, s, ctx);
     lineEl.style.marginBlockStart = GAP_IN + 'mm';
     el.appendChild(lineEl);
@@ -251,11 +259,28 @@ function bigModelBlock(unit, dims, s, ctx, blankCols) {
   return { el, size: cols * s + (cols - 1) * GAP_IN, used };
 }
 
+// 1枚に並べる文字の数を決め、用紙の幅（右から左）にぴったり収まるようにマスの大きさを合わせる。
+// ページの数を1枚から順に試し、文字をページに均等に分けたときのマスの大きさが、
+// 選んだ大きさにいちばん近い分け方を選ぶ（あ行の5文字なら、5文字で1枚をちょうど埋める）。
+// 大きくするのは、1列に 手本2マス + なぞり + 空マス1つ が入るところまで。
+function fitCellSize(s, cols, block, between, total, maxSize) {
+  const sizeFor = n => ((block - (n - 1) * between) / n - (cols - 1) * GAP_IN) / cols;
+  let best = null;
+  for (let pages = 1; pages <= Math.max(1, total); pages++) {
+    const size = sizeFor(Math.ceil(Math.max(1, total) / pages));
+    if (size > maxSize) continue;
+    if (best === null || Math.abs(size - s) < Math.abs(best - s)) best = size;
+  }
+  if (best === null) best = maxSize; // 文字が少なすぎて埋めきれないときは上限の大きさで右から並べる
+  return Math.floor(best * 100) / 100; // 端数で次の列がはみ出さないよう切り捨てる
+}
+
 export function buildLinePages(cfg, units, ctx) {
   const dims = paperDims(cfg);
-  const s = cfg.cellSize;
-  const blocks = units.map(unit => bigModelBlock(unit, dims, s, ctx, cfg.blankCols));
   const between = 5;
+  const maxSize = dims.inline / (2 + Math.max(1, cfg.traceCount) + 1);
+  const s = fitCellSize(cfg.cellSize, cfg.blankCols + 1, dims.block, between, units.length, maxSize);
+  const blocks = units.map(unit => bigModelBlock(unit, dims, s, ctx, cfg.blankCols, cfg.traceCount));
   const maxUsed = Math.max(0, ...blocks.map(b => b.used));
   return pagesToBodies(paginate(blocks, dims, between), dims, between, maxUsed);
 }
