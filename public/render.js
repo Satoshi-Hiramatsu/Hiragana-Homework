@@ -6,6 +6,8 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 const VIEW = 109; // KanjiVG の座標系
 
 export const INK = '#1a1a1a';
+// 書き順つきの大きな手本の色。上からなぞれるよう、なぞり字（#b4b4b4）より少し濃いうすい色にする
+export const BIG_MODEL = '#999999';
 const START_DOT = '#c0392b';
 
 export function hasStrokes(ch) { return Boolean(STROKES[ch]); }
