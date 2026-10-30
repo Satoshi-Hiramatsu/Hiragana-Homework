@@ -84,7 +84,7 @@ function textGlyph(ch, color) {
 }
 
 // 1文字ぶんの字を作る。
-//   kind: 'model' | 'trace'。ctx: { glyph, traceStyle, strokeNumbers, startDots, vertical }
+//   kind: 'model' | 'trace'。ctx: { glyph, traceStyle, strokeNumbers, startDots }
 export function glyph(ch, kind, ctx, color) {
   const canStroke = hasStrokes(ch);
   const dotted = kind === 'trace' && ctx.traceStyle === 'dot';
@@ -102,9 +102,9 @@ export function glyph(ch, kind, ctx, color) {
   } else {
     el = textGlyph(ch, color);
   }
-  // 縦書きでは小書き文字を右上に寄せ、長音記号は縦にする（字そのものは横書き用の形で持っている）
-  if (ctx.vertical && isSmall(ch)) el.classList.add('v-small');
-  if (ctx.vertical && ch === 'ー') el.classList.add('v-rotate');
+  // 縦書きなので小書き文字を右上に寄せ、長音記号は縦にする（字そのものは横書き用の形で持っている）
+  if (isSmall(ch)) el.classList.add('v-small');
+  if (ch === 'ー') el.classList.add('v-rotate');
   return el;
 }
 

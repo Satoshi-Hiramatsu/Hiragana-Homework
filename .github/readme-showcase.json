@@ -40,7 +40,7 @@
       "id": "sheet-line",
       "path": "docs/screenshots/sheet-line.png",
       "url": "http://127.0.0.1:8787",
-      "alt": "行れんしゅうのプリント。手本、だんだんうすくなるなぞり字、空マスが1行に並ぶ",
+      "alt": "行れんしゅうのプリント（A4横・縦書き）。右の列から手本、濃いなぞり字、うすいなぞり字の3列が並ぶ",
       "viewport": {
         "width": 1800,
         "height": 1300
@@ -88,7 +88,7 @@
       "id": "sheet-chart",
       "path": "docs/screenshots/sheet-chart.png",
       "url": "http://127.0.0.1:8787",
-      "alt": "50音ひょうの穴うめプリント（縦書き・A4横）",
+      "alt": "50音ひょうの穴うめプリント（A4横・縦書き）",
       "viewport": {
         "width": 1800,
         "height": 1300
@@ -112,7 +112,7 @@
       "id": "sheet-word",
       "path": "docs/screenshots/sheet-word.png",
       "url": "http://127.0.0.1:8787",
-      "alt": "ことばのプリント。絵文字の絵と、ことばの手本・なぞり・空マス",
+      "alt": "ことばのプリント（A4横・縦書き）。右の列から絵つきの手本、なぞり字2列",
       "viewport": {
         "width": 1800,
         "height": 1300
@@ -136,7 +136,7 @@
       "id": "sheet-tate",
       "path": "docs/screenshots/sheet-tate.png",
       "url": "http://127.0.0.1:8787",
-      "alt": "国語ノート風の縦書きプリント（A4横）。右から左へ行が進む",
+      "alt": "国語ノート風のプリント（A4横・縦書き）。中マスで清音をぜんぶ練習する",
       "viewport": {
         "width": 1800,
         "height": 1300
@@ -185,8 +185,8 @@
         },
         {
           "action": "click",
-          "target": "手本「き」",
-          "selector": "#a4Wrapper .cell-model[data-unit=\"き\"]"
+          "target": "手本「お」",
+          "selector": "#a4Wrapper .cell-model[data-unit=\"お\"]"
         },
         {
           "action": "open",

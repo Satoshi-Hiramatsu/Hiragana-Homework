@@ -65,7 +65,7 @@ function setRadio(name, value) {
   if (el) el.checked = true;
 }
 
-const RADIOS = ['format', 'script', 'paper', 'direction'];
+const RADIOS = ['format', 'script'];
 const SELECTS = {
   linesPerUnit: 'linesPerUnit', singleLines: 'singleLines', chartMode: 'chartMode', blankRate: 'blankRate',
   source: 'source', order: 'order', cellSize: 'cellSize', traceCount: 'traceCount', glyph: 'glyphSelect',
@@ -111,13 +111,13 @@ function applyConfig(cfg) {
 // ---- おすすめ設定 ----
 const SEION = ROWS.filter(r => r.group === 'seion').map(r => r.key);
 const RECOMMEND = {
-  first: { format: 'single', script: 'hira', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, paper: 'portrait', direction: 'yoko', strokeNumbers: true, startDots: true, order: 'seq' },
-  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, linesPerUnit: 1, paper: 'portrait', direction: 'yoko', strokeNumbers: true, startDots: true, order: 'seq' },
-  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, paper: 'landscape', direction: 'tate', strokeNumbers: false, order: 'seq' },
-  chart: { format: 'chart', script: 'hira', source: 'rows', rows: SEION, chartMode: 'fill', blankRate: 35, answer: true, cellSize: 24, glyph: 'klee', paper: 'landscape', direction: 'tate' },
-  word: { format: 'word', script: 'hira', source: 'rows', rows: ['a', 'ka', 'sa'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 1, linesPerUnit: 1, showPicture: true, paper: 'portrait', direction: 'yoko', strokeNumbers: false, order: 'seq' },
-  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, paper: 'portrait', direction: 'yoko', strokeNumbers: false, order: 'seq' },
-  katakana: { format: 'single', script: 'kata', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, paper: 'portrait', direction: 'yoko', strokeNumbers: true, startDots: true, order: 'seq' },
+  first: { format: 'single', script: 'hira', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
+  nencho: { format: 'line', script: 'hira', source: 'rows', rows: ['a', 'ka'], cellSize: 24, glyph: 'klee', traceStyle: 'gray', traceCount: 3, linesPerUnit: 1, strokeNumbers: true, startDots: true, order: 'seq' },
+  grade1: { format: 'line', script: 'hira', source: 'rows', rows: SEION, cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, strokeNumbers: false, order: 'seq' },
+  chart: { format: 'chart', script: 'hira', source: 'rows', rows: SEION, chartMode: 'fill', blankRate: 35, answer: true, cellSize: 24, glyph: 'klee' },
+  word: { format: 'word', script: 'hira', source: 'rows', rows: ['a', 'ka', 'sa'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 1, linesPerUnit: 1, showPicture: true, strokeNumbers: false, order: 'seq' },
+  dakuon: { format: 'line', script: 'hira', source: 'rows', rows: ['ga', 'za', 'da', 'ba', 'pa', 'y-き', 'y-し', 'y-ち'], cellSize: 20, glyph: 'klee', traceStyle: 'gray', traceCount: 2, linesPerUnit: 1, strokeNumbers: false, order: 'seq' },
+  katakana: { format: 'single', script: 'kata', source: 'rows', rows: ['a'], cellSize: 30, glyph: 'stroke', traceStyle: 'dot', traceCount: 4, singleLines: 2, strokeNumbers: true, startDots: true, order: 'seq' },
 };
 
 // ---- 練習する字・ことばを決める ----
@@ -213,7 +213,7 @@ function buildSheetHeader(cfg, badge) {
 
 function wrapSheet(body, cfg, badge) {
   const sheet = document.createElement('div');
-  sheet.className = 'sheet' + (cfg.paper === 'landscape' ? ' landscape' : '');
+  sheet.className = 'sheet';
   sheet.style.setProperty('--kana-font', FONTS[cfg.glyph] || FONTS.klee);
   sheet.appendChild(buildSheetHeader(cfg, badge));
   sheet.appendChild(body);
@@ -228,7 +228,6 @@ function buildSheets(cfg, seed) {
     traceStyle: cfg.traceStyle,
     strokeNumbers: cfg.strokeNumbers,
     startDots: cfg.startDots,
-    vertical: cfg.direction === 'tate',
     guides: cfg.guides,
     fade: cfg.fade,
   };
@@ -273,7 +272,6 @@ function render() {
   syncVisibility();
   const cfg = readConfig();
   store.saveLast(cfg);
-  $('pageSizeStyle').textContent = `@page { size: A4 ${cfg.paper}; margin: 0; }`;
   const wrapper = $('a4Wrapper');
   $('errorMsg').textContent = '';
   let sheets = [];
@@ -284,7 +282,7 @@ function render() {
   }
   wrapper.replaceChildren(...sheets);
   $('previewTitle').textContent = sheets.length
-    ? `A4${cfg.paper === 'landscape' ? '横' : '縦'}プリントプレビュー（${sheets.length}枚）`
+    ? `A4横プリントプレビュー（${sheets.length}枚）`
     : 'A4プリントプレビュー';
   updatePreviewScale();
 }
@@ -468,7 +466,14 @@ $('weakRecordBtn').addEventListener('click', recordMarked);
 
 $('a4Wrapper').addEventListener('click', e => {
   const target = e.target.closest('.cell-model[data-unit], .big-glyph[data-unit]');
-  if (target) target.classList.toggle('marked');
+  if (!target) return;
+  // 手本の列は同じ字が並ぶので、同じまとまりの手本にまとめて印を付ける
+  const on = !target.classList.contains('marked');
+  const block = target.closest('.unit-block') || target;
+  block.querySelectorAll('.cell-model, .big-glyph').forEach(el => {
+    if (el.dataset.unit === target.dataset.unit) el.classList.toggle('marked', on);
+  });
+  if (block === target) target.classList.toggle('marked', on);
 });
 
 // 設定メニューは一度に1項目だけ開く（details の name 属性に未対応のブラウザ向け）

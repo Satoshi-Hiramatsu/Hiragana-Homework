@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/hiragana.svg" type="image/svg+xml">
 <meta name="theme-color" content="#2d4f78">
-<style id="pageSizeStyle">@page { size: A4 portrait; margin: 0; }</style>
+<style>@page { size: A4 landscape; margin: 0; }</style>
 </head>
 <body>
 
@@ -38,7 +38,7 @@
             <option value="">選択してください（手動設定）</option>
             <option value="first">年少・年中：はじめてのひらがな（1もじじっくり・特大マス）</option>
             <option value="nencho">年長：あいうえおを1行ずつ（行れんしゅう・大きいマス）</option>
-            <option value="grade1">小学1年：国語ノート風（縦書き・A4横）</option>
+            <option value="grade1">小学1年：国語ノート風（中マス・清音ぜんぶ）</option>
             <option value="chart">小学1年：50音ひょうの穴うめ（こたえつき）</option>
             <option value="word">ことばを書いてみよう（絵つき）</option>
             <option value="dakuon">だくおん・ようおんの練習</option>
@@ -56,7 +56,7 @@
           <label class="format-option">
             <input type="radio" name="format" value="line" checked>
             <span class="format-name">行れんしゅう</span>
-            <span class="format-desc">1行に1文字。手本→なぞり→空マス</span>
+            <span class="format-desc">右の列から 手本→なぞり</span>
           </label>
           <label class="format-option">
             <input type="radio" name="format" value="single">
@@ -86,7 +86,7 @@
               </select>
             </label>
           </div>
-          <div class="help-text">手本・なぞりのあとは空マスで埋めます。行数を増やすと書く練習の量が増えます。</div>
+          <div class="help-text">「なぞる字をだんだんうすくする」がオンのときは、右から 手本の列・なぞりの列（濃い）・なぞりの列（うすい）の3列になります。オフのときは1行に手本・なぞり・空マスを並べ、行数を増やすと書く練習の量が増えます。</div>
         </div>
 
         <div class="op-block" data-for="single" hidden>
@@ -100,7 +100,7 @@
               </select>
             </label>
           </div>
-          <div class="help-text">大きな手本には書き順の番号と書きはじめの点が付きます。右側に1画ずつの書き順図を出します。</div>
+          <div class="help-text">大きな手本には書き順の番号と書きはじめの点が付きます。手本の下に1画ずつの書き順図を出します。</div>
         </div>
 
         <div class="op-block" data-for="chart" hidden>
@@ -235,21 +235,7 @@
     <details class="card settings-accordion" name="settings-menu">
       <summary class="card-title">用紙・出力</summary>
       <div class="card-body">
-        <div class="form-group">
-          <label>用紙の向き</label>
-          <div class="segmented" role="radiogroup" aria-label="用紙の向き">
-            <label><input type="radio" name="paper" value="portrait" checked><span>A4 縦</span></label>
-            <label><input type="radio" name="paper" value="landscape"><span>A4 横</span></label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>書く向き</label>
-          <div class="segmented" role="radiogroup" aria-label="書く向き">
-            <label><input type="radio" name="direction" value="yoko" checked><span>横書き</span></label>
-            <label><input type="radio" name="direction" value="tate"><span>縦書き</span></label>
-          </div>
-          <div class="help-text">縦書きは右から左へ行が進みます（国語ノートと同じ）。縦書きはA4横、横書きはA4縦が見やすくなります。</div>
-        </div>
+        <div class="help-text" style="margin-bottom:.8rem;">用紙はA4横です。字はすべて縦書きで、国語ノートと同じく右から左へ進みます。</div>
         <div class="digits-wrap">
           <label class="digit-field">セット数
             <select id="setCount">

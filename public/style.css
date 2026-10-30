@@ -361,8 +361,8 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
 .a4-wrapper .sheet { flex: none; }
 .sheet {
   --kana-font: "Klee One", "Yu Gothic", serif;
-  width: 210mm;
-  height: 297mm;
+  width: 297mm;
+  height: 210mm;
   background: #fff;
   color: #1a1a1a;
   font-family: var(--font-body);
@@ -373,7 +373,6 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
   flex-direction: column;
   overflow: hidden;
 }
-.sheet.landscape { width: 297mm; height: 210mm; }
 .sheet-header {
   flex: none;
   height: 14mm;
@@ -399,7 +398,7 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
 }
 
 .sheet-body { flex: none; overflow: hidden; }
-.sheet-body.vertical { writing-mode: vertical-rl; }
+.sheet-body { writing-mode: vertical-rl; }
 .line { display: flex; align-items: center; }
 .cell-group { display: flex; flex: none; }
 .cell {
@@ -542,14 +541,13 @@ textarea:focus-visible { border-color: var(--color-ink-2); outline: 2px solid va
   .a4-wrapper { display: block !important; max-width: none !important; padding: 0 !important; overflow: visible !important; }
   .a4-wrapper .sheet { transform: none !important; margin-bottom: 0 !important; }
   .sheet {
-    height: 296mm;
+    height: 209mm;
     box-shadow: none;
     border: none;
     margin: 0;
     break-inside: avoid;
     break-after: page;
   }
-  .sheet.landscape { height: 209mm; }
   .sheet:last-child { break-after: auto; }
   .sheet * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cell.marked, .big-glyph.marked { background: #fff !important; box-shadow: none !important; }

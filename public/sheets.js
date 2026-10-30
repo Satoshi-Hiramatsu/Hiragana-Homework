@@ -1,7 +1,7 @@
 // 4つの形式（行れんしゅう・1もじじっくり・50音ひょう・ことば）の用紙本文を組み立てる。
-// 縦書き・横書きの違いは CSS の writing-mode に任せ、ここでは
-//   inline = 1行の進む向きの長さ、block = 行が積み重なる向きの長さ
-// として、どちらの向きでも同じ計算で割り付ける。寸法はすべて mm。
+// 用紙はいつも A4 横、字は縦書きで右から左へ進む。縦書きは CSS の writing-mode に任せ、ここでは
+//   inline = 1列の長さ（上から下）、block = 列が積み重なる向きの長さ（右から左）
+// として割り付ける。寸法はすべて mm。
 import { cell, pictureCell, strokeGlyph, hasStrokes, strokeCount, traceColor, INK } from './render.js';
 import { isSmall } from './kana.js';
 
@@ -10,18 +10,12 @@ const PAD_TOP = 10;
 const PAD_BOTTOM = 10;
 const HEADER = 18; // 用紙ヘッダー（タイトル・なまえ欄）の高さ＋余白
 
-export function paperDims(cfg) {
-  const landscape = cfg.paper === 'landscape';
-  const pw = landscape ? 297 : 210;
-  const ph = landscape ? 210 : 297;
+export function paperDims() {
+  const pw = 297;
+  const ph = 210;
   const bodyW = pw - PAD_X * 2;
   const bodyH = ph - PAD_TOP - PAD_BOTTOM - HEADER;
-  const vertical = cfg.direction === 'tate';
-  return {
-    pw, ph, bodyW, bodyH, vertical,
-    inline: vertical ? bodyH : bodyW,
-    block: vertical ? bodyW : bodyH,
-  };
+  return { pw, ph, bodyW, bodyH, inline: bodyH, block: bodyW };
 }
 
 // ---- 乱数（履歴から同じ用紙を再現できるようにシードつき） ----
@@ -75,15 +69,16 @@ function flow(groups, cap, s) {
   return lines;
 }
 
-// base のあとに空マスのグループを、target 行に収まるだけ足す（最低1つ）。
-function fillWithBlanks(base, makeBlank, cap, s, target) {
+// base のあとに空マスのグループを、target 行に収まるだけ足す。
+// atLeastOne のときは、行を1つ増やしてでも最低1つ足す。
+function fillWithBlanks(base, makeBlank, cap, s, target, atLeastOne = true) {
   let groups = base.slice();
   let limit = Math.max(target, flow(groups, cap, s).length);
   let added = 0;
   for (let guard = 0; guard < 400; guard++) {
     const next = groups.concat([makeBlank()]);
     if (flow(next, cap, s).length > limit) {
-      if (added === 0) { limit++; continue; }
+      if (added === 0 && atLeastOne) { limit++; continue; }
       break;
     }
     groups = next;
@@ -147,7 +142,7 @@ function paginate(blocks, dims, gapBetween) {
 
 function makeBody(dims) {
   const body = document.createElement('div');
-  body.className = 'sheet-body' + (dims.vertical ? ' vertical' : '');
+  body.className = 'sheet-body';
   body.style.width = dims.bodyW + 'mm';
   body.style.height = dims.bodyH + 'mm';
   return body;
@@ -181,10 +176,37 @@ function unitBlock(lines, s, ctx, cls) {
   return { el, size: lines.length * s + (lines.length - 1) * GAP_IN, used: Math.max(...lines.map(l => l.used)) };
 }
 
+// だんだんうすくするときは、列ごとに濃さを変える。
+// 右の列から 手本 → なぞり（濃い）→ なぞり（うすい）の3列。
+// head は手本の列の先頭に置くもの（ことばの絵）。なぞりの列は同じ長さの空きをあけてそろえる。
+const FADE_TRACE_LINES = 2;
+
+function fadeColumnsBlock(text, dims, s, ctx, { gap, head } = {}) {
+  const lead = head ? s + gap : 0;
+  const len = [...text].length * s;
+  const count = Math.max(1, Math.floor((dims.inline - lead + gap + 0.01) / (len + gap)));
+  const column = (first, kind, extra) => flow(
+    (first ? [first] : []).concat(Array.from({ length: count },
+      () => ({ cells: cellsOf(text, kind, { unit: text, ...extra }), gapBefore: gap }))),
+    dims.inline, s);
+  const lines = [column(head, 'model', {})];
+  for (let i = 0; i < FADE_TRACE_LINES; i++) {
+    const spacer = head ? { cells: [{ kind: 'void' }], gapBefore: 0 } : null;
+    lines.push(column(spacer, 'trace', { color: traceColor(i, FADE_TRACE_LINES, true) }));
+  }
+  return unitBlock(lines.flat(), s, ctx);
+}
+
 // ===== A. 行れんしゅう =====
 export function buildLinePages(cfg, units, ctx) {
   const dims = paperDims(cfg);
   const s = cfg.cellSize;
+  if (ctx.fade) {
+    const blocks = units.map(unit => fadeColumnsBlock(unit, dims, s, ctx,
+      { gap: [...unit].length > 1 ? SLOT_GAP : 0 }));
+    const maxUsed = Math.max(0, ...blocks.map(b => b.used));
+    return pagesToBodies(paginate(blocks, dims, 5), dims, 5, maxUsed);
+  }
   const blocks = units.map(unit => {
     const gap = [...unit].length > 1 ? SLOT_GAP : 0;
     const base = [{ cells: cellsOf(unit, 'model', { unit }), gapBefore: gap }]
@@ -202,13 +224,20 @@ export function buildLinePages(cfg, units, ctx) {
 export function buildWordPages(cfg, words, ctx) {
   const dims = paperDims(cfg);
   const s = cfg.cellSize;
+  if (ctx.fade) {
+    const blocks = words.map(w => fadeColumnsBlock(w.text, dims, s, ctx,
+      { gap: WORD_GAP, head: cfg.showPicture ? { pic: w.pic || '', gapBefore: 0 } : null }));
+    const maxUsed = Math.max(0, ...blocks.map(b => b.used));
+    return pagesToBodies(paginate(blocks, dims, 5), dims, 5, maxUsed);
+  }
   const blocks = words.map(w => {
     const base = [];
     if (cfg.showPicture) base.push({ pic: w.pic || '', gapBefore: 0 });
     base.push({ cells: cellsOf(w.text, 'model', { unit: w.text }), gapBefore: WORD_GAP });
     base.push(...traceGroups(w.text, cfg.traceCount, ctx, WORD_GAP, w.text));
+    // 空マスだけの列を足すと、絵の下にそろわない半端な列になるので足さない
     const lines = fillWithBlanks(base, () => ({ cells: cellsOf(w.text, 'blank'), gapBefore: WORD_GAP }),
-      dims.inline, s, cfg.linesPerUnit);
+      dims.inline, s, cfg.linesPerUnit, false);
     return unitBlock(lines, s, ctx);
   });
   const maxUsed = Math.max(0, ...blocks.map(b => b.used));
@@ -232,8 +261,8 @@ function bigGlyphBox(ch, size, ctx) {
     span.style.color = INK;
     box.appendChild(span);
   }
-  if (ctx.vertical && isSmall(ch)) box.firstChild.classList.add('v-small');
-  if (ctx.vertical && ch === 'ー') box.firstChild.classList.add('v-rotate');
+  if (isSmall(ch)) box.firstChild.classList.add('v-small');
+  if (ch === 'ー') box.firstChild.classList.add('v-rotate');
   return box;
 }
 
