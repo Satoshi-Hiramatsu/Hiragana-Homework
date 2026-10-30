@@ -29,6 +29,13 @@
 
   <aside class="control-panel">
 
+    <div class="card script-card">
+      <div class="segmented segmented-wide" role="radiogroup" aria-label="文字の種類">
+        <label><input type="radio" name="script" value="hira" checked><span>ひらがな</span></label>
+        <label><input type="radio" name="script" value="kata"><span>カタカナ</span></label>
+      </div>
+    </div>
+
     <details class="card settings-accordion" name="settings-menu">
       <summary class="card-title">おすすめ設定</summary>
       <div class="card-body">
@@ -36,7 +43,7 @@
           <label for="recommend">年齢・目的から選ぶ</label>
           <select id="recommend">
             <option value="">選択してください（手動設定）</option>
-            <option value="first">年少・年中：はじめてのひらがな（1もじじっくり・特大マス）</option>
+            <option value="first">年少・年中：はじめての字（1もじじっくり・特大マス）</option>
             <option value="nencho">年長：あいうえおを1行ずつ（行れんしゅう・大きいマス）</option>
             <option value="grade1">小学1年：国語ノート風（中マス・清音ぜんぶ）</option>
             <option value="chart">小学1年：50音ひょうの穴うめ（こたえつき）</option>
@@ -44,7 +51,7 @@
             <option value="dakuon">だくおん・ようおんの練習</option>
             <option value="katakana">カタカナ はじめて（1もじじっくり）</option>
           </select>
-          <div class="help-text">選ぶと形式・マスの大きさなどをまとめて設定します。そのあと個別に変更できます。</div>
+          <div class="help-text">選ぶと形式・マスの大きさなどをまとめて設定します。ひらがな／カタカナは上の切りかえのままです。そのあと個別に変更できます。</div>
         </div>
       </div>
     </details>
@@ -157,12 +164,7 @@
     <details class="card settings-accordion" name="settings-menu">
       <summary class="card-title">練習する文字</summary>
       <div class="card-body">
-        <div class="segmented" role="radiogroup" aria-label="文字の種類">
-          <label><input type="radio" name="script" value="hira" checked><span>ひらがな</span></label>
-          <label><input type="radio" name="script" value="kata"><span>カタカナ</span></label>
-        </div>
-
-        <div class="form-group" style="margin-top:1rem;">
+        <div class="form-group">
           <label for="source">文字のえらびかた</label>
           <select id="source">
             <option value="rows" selected>行からえらぶ</option>
@@ -244,8 +246,6 @@
           </select>
         </div>
 
-        <div class="option-grid">
-          <label class="check-row"><input type="checkbox" id="opt-fade" checked> なぞる字をだんだんうすくする</label>
         <div class="form-group">
           <label for="modelShade">書き順つき手本の濃さ</label>
           <select id="modelShade">
@@ -257,6 +257,8 @@
           <div class="help-text">行れんしゅう・1もじじっくりの大きな手本の字の濃さです。書き順の番号と●は赤のままです。</div>
         </div>
 
+        <div class="option-grid">
+          <label class="check-row"><input type="checkbox" id="opt-fade" checked> なぞる字をだんだんうすくする</label>
           <label class="check-row"><input type="checkbox" id="opt-numbers"> 手本に書き順の番号をつける</label>
           <label class="check-row"><input type="checkbox" id="opt-start" checked> 書き順の番号に、書きはじめの●を添える</label>
           <label class="check-row"><input type="checkbox" id="opt-guides" checked> マスに十字の点線を入れる</label>
