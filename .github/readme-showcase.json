@@ -1,0 +1,262 @@
+{
+  "version": 1,
+  "readme": "README.md",
+  "start": {
+    "command": "npm start",
+    "readyUrl": "http://127.0.0.1:8787",
+    "timeoutSeconds": 60
+  },
+  "notes": "Math.random を固定値で始まる疑似乱数に差し替えて撮影し、穴うめの位置を毎回そろえる。localStorage は空の状態から始める。 steps の open は設定カードを開く、scrollTo は要素を画面上端までスクロールする。element を指定した項目はその要素だけを 1.5 倍で撮影する。",
+  "screenshots": [
+    {
+      "id": "desktop-main",
+      "path": "docs/screenshots/main-screen.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "ひらがな れんしゅうプリント ジェネレーターのメイン画面。左に設定、右にA4プリントのプレビュー",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "fullPage": false,
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "open",
+          "target": "おすすめ設定"
+        },
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "nencho"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "sheet-line",
+      "path": "docs/screenshots/sheet-line.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "行れんしゅうのプリント。手本、だんだんうすくなるなぞり字、空マスが1行に並ぶ",
+      "viewport": {
+        "width": 1800,
+        "height": 1300
+      },
+      "element": "#a4Wrapper .sheet",
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "nencho"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "sheet-single",
+      "path": "docs/screenshots/sheet-single.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "1もじじっくりのプリント。書き順の番号つきの大きな手本、1画ずつの書き順図、例のことば",
+      "viewport": {
+        "width": 1800,
+        "height": 1300
+      },
+      "element": "#a4Wrapper .sheet",
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "first"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "sheet-chart",
+      "path": "docs/screenshots/sheet-chart.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "50音ひょうの穴うめプリント（縦書き・A4横）",
+      "viewport": {
+        "width": 1800,
+        "height": 1300
+      },
+      "element": "#a4Wrapper .sheet",
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "chart"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "sheet-word",
+      "path": "docs/screenshots/sheet-word.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "ことばのプリント。絵文字の絵と、ことばの手本・なぞり・空マス",
+      "viewport": {
+        "width": 1800,
+        "height": 1300
+      },
+      "element": "#a4Wrapper .sheet",
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "word"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "sheet-tate",
+      "path": "docs/screenshots/sheet-tate.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "国語ノート風の縦書きプリント（A4横）。右から左へ行が進む",
+      "viewport": {
+        "width": 1800,
+        "height": 1300
+      },
+      "element": "#a4Wrapper .sheet",
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "grade1"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "desktop-weak",
+      "path": "docs/screenshots/weak-mark.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "プレビューの手本をクリックして、にがてな字に印を付けた画面",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "fullPage": false,
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "nencho"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        },
+        {
+          "action": "click",
+          "target": "手本「い」",
+          "selector": "#a4Wrapper .cell-model[data-unit=\"い\"]"
+        },
+        {
+          "action": "click",
+          "target": "手本「き」",
+          "selector": "#a4Wrapper .cell-model[data-unit=\"き\"]"
+        },
+        {
+          "action": "open",
+          "target": "にがてな字の記録"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 300
+        }
+      ]
+    },
+    {
+      "id": "phone-main",
+      "path": "docs/screenshots/phone-screen.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "スマートフォンでの表示",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 2,
+      "fullPage": false,
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "nencho"
+        },
+        {
+          "action": "open",
+          "target": "プリントの形式"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    },
+    {
+      "id": "phone-preview",
+      "path": "docs/screenshots/phone-preview.png",
+      "url": "http://127.0.0.1:8787",
+      "alt": "スマートフォンでのプレビュー表示。A4用紙を画面幅に合わせて縮小表示",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 2,
+      "fullPage": false,
+      "waitFor": "#a4Wrapper .sheet",
+      "steps": [
+        {
+          "action": "select",
+          "target": "年齢・目的から選ぶ",
+          "selector": "#recommend",
+          "value": "nencho"
+        },
+        {
+          "action": "scrollTo",
+          "target": "プレビュー",
+          "selector": ".preview-container"
+        },
+        {
+          "action": "wait",
+          "milliseconds": 500
+        }
+      ]
+    }
+  ],
+  "checks": []
+}
