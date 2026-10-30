@@ -148,11 +148,13 @@ function makeBody(dims) {
   return body;
 }
 
-function pagesToBodies(pages, dims, gapBetween, maxUsed) {
+// centerBlock のときは、ページの列が少なくても左右（block 方向）の中央に置く
+function pagesToBodies(pages, dims, gapBetween, maxUsed, centerBlock = false) {
   return pages.map(page => {
     const body = makeBody(dims);
     // 行の長さがそろうので、余った分を inline 方向の前後に振り分けて中央に置く
     body.style.paddingInlineStart = Math.max(0, (dims.inline - maxUsed) / 2) + 'mm';
+    if (centerBlock) body.style.paddingBlockStart = Math.max(0, (dims.block - page.used) / 2) + 'mm';
     page.items.forEach((b, i) => {
       if (i > 0) b.el.style.marginBlockStart = gapBetween + 'mm';
       body.appendChild(b.el);
@@ -263,8 +265,13 @@ function bigModelBlock(unit, dims, s, ctx, blankCols, traceCount) {
 // ページの数を1枚から順に試し、文字をページに均等に分けたときのマスの大きさが、
 // 選んだ大きさにいちばん近い分け方を選ぶ（あ行の5文字なら、5文字で1枚をちょうど埋める）。
 // 大きくするのは、1列に 手本2マス + なぞり + 空マス1つ が入るところまで。
+// n 文字で用紙の幅をちょうど埋めるマスの大きさ
+function sizeForCount(n, cols, block, between) {
+  return ((block - (n - 1) * between) / n - (cols - 1) * GAP_IN) / cols;
+}
+
 function fitCellSize(s, cols, block, between, total, maxSize) {
-  const sizeFor = n => ((block - (n - 1) * between) / n - (cols - 1) * GAP_IN) / cols;
+  const sizeFor = n => sizeForCount(n, cols, block, between);
   let best = null;
   for (let pages = 1; pages <= Math.max(1, total); pages++) {
     const size = sizeFor(Math.ceil(Math.max(1, total) / pages));
@@ -275,12 +282,28 @@ function fitCellSize(s, cols, block, between, total, maxSize) {
   return Math.floor(best * 100) / 100; // 端数で次の列がはみ出さないよう切り捨てる
 }
 
-export function buildLinePages(cfg, units, ctx) {
+// groups を渡したとき（行からえらんで、あいうえお順）は、1つの行を1ページにする。
+// マスはいちばん字の多い行（ふつうは5文字）で用紙の幅がちょうど埋まる大きさにそろえ、
+// 字の少ない行（や行・わ行など）は左右の中央に置く。
+export function buildLinePages(cfg, units, ctx, groups) {
   const dims = paperDims(cfg);
   const between = 5;
+  const cols = cfg.blankCols + 1;
   const maxSize = dims.inline / (2 + Math.max(1, cfg.traceCount) + 1);
-  const s = fitCellSize(cfg.cellSize, cfg.blankCols + 1, dims.block, between, units.length, maxSize);
-  const blocks = units.map(unit => bigModelBlock(unit, dims, s, ctx, cfg.blankCols, cfg.traceCount));
+  const block = unit => bigModelBlock(unit, dims, s, ctx, cfg.blankCols, cfg.traceCount);
+  let s;
+  if (groups && groups.length) {
+    const most = Math.max(...groups.map(g => g.length));
+    s = Math.floor(Math.min(sizeForCount(most, cols, dims.block, between), maxSize) * 100) / 100;
+    const pages = groups.map(g => {
+      const items = g.map(block);
+      return { items, used: items.reduce((sum, b) => sum + b.size, 0) + (items.length - 1) * between };
+    });
+    const maxUsed = Math.max(0, ...pages.flatMap(p => p.items.map(b => b.used)));
+    return pagesToBodies(pages, dims, between, maxUsed, true);
+  }
+  s = fitCellSize(cfg.cellSize, cols, dims.block, between, units.length, maxSize);
+  const blocks = units.map(block);
   const maxUsed = Math.max(0, ...blocks.map(b => b.used));
   return pagesToBodies(paginate(blocks, dims, between), dims, between, maxUsed);
 }

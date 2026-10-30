@@ -136,6 +136,19 @@ function resolveUnits(cfg) {
   return selectedRows(cfg).flatMap(r => r.chars.filter(Boolean)).map(u => conv(cfg, u));
 }
 
+// 行ごとの字のまとまり。「ん」は、わ行もえらんでいれば わ・を・ん で1つにする
+function rowGroups(cfg) {
+  const groups = [];
+  let prevKey = null;
+  for (const r of selectedRows(cfg)) {
+    const chars = r.chars.filter(Boolean).map(u => conv(cfg, u));
+    if (r.key === 'n' && prevKey === 'wa') groups[groups.length - 1].push(...chars);
+    else groups.push(chars);
+    prevKey = r.key;
+  }
+  return groups;
+}
+
 function wordEntries(cfg) {
   const list = cfg.script === 'kata' ? WORDS_KATAKANA : WORDS_HIRAGANA;
   return list.map(([text, pic, focus]) => ({ text, pic, focus: focus ? conv(cfg, focus) : splitUnits(text)[0] }));
@@ -264,9 +277,11 @@ function buildSheets(cfg, seed) {
       ? 'にがてな字がまだ記録されていません。'
       : cfg.source === 'custom' ? '練習する字を入力してください。' : '練習する行を1つ以上えらんでください。');
     if (cfg.order === 'random') units = shuffle(units, rng);
+    // 行からえらんで あいうえお順 のときは、行れんしゅうを1つの行ごとに1ページにする
+    const groups = cfg.source === 'rows' && cfg.order !== 'random' ? rowGroups(cfg) : null;
     const bodies = cfg.format === 'single'
       ? buildSinglePages(cfg, units, ctx, findWord)
-      : buildLinePages(cfg, units, ctx);
+      : buildLinePages(cfg, units, ctx, groups);
     bodies.forEach(b => sheets.push(wrapSheet(b, cfg, badge)));
   }
   return sheets;

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hiragana-renshu-v5';
+const CACHE_NAME = 'hiragana-renshu-v6';
 const PRECACHE_URLS = [
   '/', '/index.html', '/style.css', '/app.js', '/store.js', '/kana.js', '/render.js', '/sheets.js',
   '/data/strokes.js', '/manifest.webmanifest', '/icons/hiragana.svg',
